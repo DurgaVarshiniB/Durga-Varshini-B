@@ -1,0 +1,75 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+@theme {
+  --color-primary: #121926;
+  --color-secondary: #FFD166;
+  --color-cream: #1e293b;
+  --color-lavender-light: #0f1014;
+  --color-accent: #3b82f6;
+  --color-cyan: #0ea5e9;
+  --color-dark: #121926;
+  --color-light: #f8fafc;
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fredoka", cursive;
+  --font-serif: "Playfair Display", serif;
+}
+
+@layer base {
+  body {
+    @apply bg-lavender-light font-sans text-dark overflow-x-hidden;
+  }
+}
+
+.kid-shadow {
+  box-shadow: 0px 8px 0px rgba(0, 0, 0, 0.1);
+}
+
+.kid-shadow-primary {
+  box-shadow: 0px 8px 0px rgba(107, 78, 224, 0.3);
+}
+
+.kid-shadow-secondary {
+  box-shadow: 0px 8px 0px rgba(255, 91, 148, 0.3);
+}
+
+.glass {
+  @apply bg-white/10 backdrop-blur-md border border-white/20;
+}
+
+.dashed-border {
+  @apply border-2 border-dashed border-secondary;
+}
+
+.kid-btn {
+  @apply active:translate-y-1 active:shadow-none transition-all duration-75;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* App Transition Classes */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateX(20px);
+}
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 300ms, transform 300ms;
+}
+.page-transition-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 300ms, transform 300ms;
+}
+

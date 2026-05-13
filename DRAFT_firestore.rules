@@ -1,0 +1,103 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Entity Validations
+    function isValidDistrict(data) {
+      return data.keys().hasAll(['id', 'name', 'image']) &&
+             data.id is string && data.id.size() <= 128 &&
+             data.name is map &&
+             data.image is string && data.image.size() <= 1024;
+    }
+
+    function isValidHero(data) {
+      return data.keys().hasAll(['id', 'name', 'description', 'districtId', 'category', 'image', 'location']) &&
+             data.id is string && data.id.size() <= 128 &&
+             data.name is map &&
+             data.description is map &&
+             data.districtId is string &&
+             data.category in ['Freedom Fighter', 'Poet', 'Reformer', 'Leader'] &&
+             data.image is string && data.image.size() <= 1024 &&
+             data.location is map;
+    }
+
+    function isValidStory(data) {
+      return data.keys().hasAll(['id', 'heroId', 'pages']) &&
+             data.id is string &&
+             data.heroId is string &&
+             data.pages is list;
+    }
+
+    function isValidQuizQuestion(data) {
+      return data.keys().hasAll(['id', 'question', 'options', 'correctIndex']) &&
+             data.id is string &&
+             data.question is map &&
+             data.options is map &&
+             data.correctIndex is int;
+    }
+
+    function isValidUserProgress(data) {
+      return data.keys().hasAll(['userId', 'completedStories', 'quizScores', 'favorites', 'badges']) &&
+             data.userId == request.auth.uid &&
+             data.completedStories is list &&
+             data.quizScores is map &&
+             data.favorites is list &&
+             data.badges is list;
+    }
+
+    // Rules for Collections
+    match /districts/{districtId} {
+      allow read: if true; // Publicly readable
+      allow write: if false; // System generated or admin only (not defined yet)
+    }
+
+    match /heroes/{heroId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /stories/{storyId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /quizQuestions/{questionId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /userProgress/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUserProgress(incoming());
+      allow update: if isOwner(userId) && isValidUserProgress(incoming()) && (
+        incoming().diff(existing()).affectedKeys().hasOnly(['completedStories', 'quizScores', 'favorites', 'badges'])
+      );
+      allow delete: if false;
+    }
+  }
+}

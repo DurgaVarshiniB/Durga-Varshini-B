@@ -1,0 +1,92 @@
+{
+  "entities": {
+    "District": {
+      "title": "District",
+      "description": "A district in Karnataka",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "object" },
+        "image": { "type": "string" }
+      },
+      "required": ["id", "name", "image"]
+    },
+    "Hero": {
+      "title": "Hero",
+      "description": "A historical hero of Karnataka",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "object" },
+        "description": { "type": "object" },
+        "districtId": { "type": "string" },
+        "category": { "type": "string", "enum": ["Freedom Fighter", "Poet", "Reformer", "Leader"] },
+        "image": { "type": "string" },
+        "location": { "type": "object" },
+        "featured": { "type": "boolean" },
+        "lifespan": { "type": "string" },
+        "stats": { "type": "array" }
+      },
+      "required": ["id", "name", "description", "districtId", "category", "image", "location"]
+    },
+    "Story": {
+      "title": "Story",
+      "description": "A digital story about a hero",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "heroId": { "type": "string" },
+        "pages": { "type": "array" }
+      },
+      "required": ["id", "heroId", "pages"]
+    },
+    "QuizQuestion": {
+      "title": "QuizQuestion",
+      "description": "A question for the quiz",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "heroId": { "type": "string" },
+        "question": { "type": "object" },
+        "options": { "type": "object" },
+        "correctIndex": { "type": "number" }
+      },
+      "required": ["id", "question", "options", "correctIndex"]
+    },
+    "UserProgress": {
+      "title": "UserProgress",
+      "description": "Progress of a user",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "completedStories": { "type": "array" },
+        "quizScores": { "type": "object" },
+        "favorites": { "type": "array" },
+        "badges": { "type": "array" }
+      },
+      "required": ["userId"]
+    }
+  },
+  "firestore": {
+    "districts": {
+      "schema": "District",
+      "description": "Collection of districts"
+    },
+    "heroes": {
+      "schema": "Hero",
+      "description": "Collection of heroes"
+    },
+    "stories": {
+      "schema": "Story",
+      "description": "Collection of stories"
+    },
+    "quizQuestions": {
+      "schema": "QuizQuestion",
+      "description": "Collection of quiz questions"
+    },
+    "userProgress": {
+      "schema": "UserProgress",
+      "description": "Collection of user progress documents, keyed by userId"
+    }
+  }
+}
